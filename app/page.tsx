@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import { runAi } from '@/actions/ai';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import ReactMarkdown from 'react-markdown';
+
 export default function Home() {
 	const [response, setResponse] = useState('');
 	const [loading, setLoading] = useState(false);
@@ -37,8 +39,14 @@ export default function Home() {
 				</Button>
 			</form>
 			<Card className="m-5">
-				<CardHeader>AI Response</CardHeader>
-				<CardContent>{loading ? 'Loading...' : response}</CardContent>
+				<CardHeader>AI response will appear here..</CardHeader>
+				<CardContent>
+					{loading ? (
+						<div>'Loading...'</div>
+					) : (
+						<ReactMarkdown>{response}</ReactMarkdown>
+					)}
+				</CardContent>
 			</Card>
 		</>
 	);
