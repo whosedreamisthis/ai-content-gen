@@ -52,9 +52,9 @@ export default function SideNav() {
 					key={index}
 					className={`${
 						path === item.path
-							? 'bg-primary text-white'
-							: 'hover:bg-primary hover:text-white dark:hover:text-black'
-					} flex m-2 mr-2 p-2 rounded-lg cursor-pointer`}
+							? 'border-primary text-primary'
+							: 'hover:border-primary hover:text-primary dark:hover:text-primary'
+					} flex m-2 mr-2 p-2 rounded-lg cursor-pointer border`}
 				>
 					<div className="flex justify-center w-full md:justify-start">
 						<Link href={item.path} className="flex">

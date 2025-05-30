@@ -11,11 +11,13 @@ import {
 	useUser,
 } from '@clerk/nextjs';
 import Link from 'next/link';
+import { Toaster } from 'react-hot-toast';
 
 export default function TopNav() {
 	const { isSignedIn, user } = useUser();
 	return (
 		<nav className="flex justify-between items-center p-2 shadow">
+			<Toaster />
 			<Link href="/">AI</Link>
 			<div className="flex items-center">
 				{isSignedIn && (
