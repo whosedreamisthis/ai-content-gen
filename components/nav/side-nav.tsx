@@ -56,14 +56,14 @@ export default function SideNav() {
 							: 'hover:bg-primary hover:text-white'
 					} flex m-2 mr-2 p-2 rounded-lg cursor-pointer`}
 				>
-					<Link href={item.path}>
-						<div className="flex items-center justify-center md:justify-start">
-							<item.icon className="w-6 h-6" />{' '}
+					<div className="flex justify-center w-full md:justify-start">
+						<Link href={item.path} className="flex">
+							<item.icon />
 							<span className="ml-2 hidden md:inline">
 								{item.name}
 							</span>
-						</div>
-					</Link>
+						</Link>
+					</div>
 				</div>
 			))}
 		</div>
