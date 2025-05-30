@@ -15,6 +15,8 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
 import { Editor } from '@toast-ui/react-editor';
 import toast from 'react-hot-toast';
+import { saveQuery } from '@/actions/ai';
+import { useUser } from '@clerk/nextjs';
 export interface Template {
 	name: string;
 	slug: string;
@@ -43,6 +45,8 @@ export default function Page({
 	const [content, setContent] = useState('');
 	const [loading, setLoading] = useState(false);
 	const editorRef = React.useRef<any>(null);
+	const { user } = useUser();
+	const email: any = user?.primaryEmailAddress?.emailAddress || '';
 
 	useEffect(() => {
 		if (content) {
@@ -77,8 +81,9 @@ export default function Page({
 		setLoading(true);
 
 		try {
-			const data: string | undefined = await runAi(t.aiPrompt + query);
+			const data: any = await runAi(t.aiPrompt + query);
 			setContent(data);
+			await saveQuery(t, email, query, data);
 		} catch (err) {
 			setContent('An error occured. Please try again.');
 		} finally {
@@ -177,7 +182,7 @@ export default function Page({
 				<div className="col-span-2">
 					<Editor
 						ref={editorRef}
-						initialValue=" "
+						initialValue="Generated content will appear here."
 						previewStype="vertical"
 						height="600px"
 						initialEditType="wysiwyg"
