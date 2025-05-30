@@ -10,6 +10,6 @@ export async function runAi(text: string) {
 		model: 'gemini-2.0-flash',
 		contents: text,
 	});
-	console.log('response', response.text);
+	// console.log('response', response.text);
 	return response.text;
 }
