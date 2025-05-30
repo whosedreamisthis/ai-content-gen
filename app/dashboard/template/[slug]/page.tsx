@@ -1,14 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // import { useRouter } from 'next/router';
 import template from '@/utils/template';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { runAi } from '@/actions/ai';
+import ReactMarkdown from 'react-markdown';
+
 export interface Template {
 	name: string;
 	slug: string;
@@ -33,6 +36,9 @@ export default function Page({
 }: {
 	params: Promise<{ slug: string }>;
 }) {
+	const [query, setQuery] = useState('');
+	const [content, setContent] = useState('');
+	const [loading, setLoading] = useState(false);
 	const [resolvedParams, setResolvedParams] = React.useState<{
 		slug: string;
 	} | null>(null);
@@ -55,8 +61,18 @@ export default function Page({
 		(item) => item.slug === resolvedParams.slug
 	) as Template;
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setLoading(true);
+
+		try {
+			const data: string | undefined = await runAi(t.aiPrompt + query);
+			setContent(data);
+		} catch (err) {
+			setContent('An error occured. Please try again.');
+		} finally {
+			setLoading(false);
+		}
 		console.log('submitted');
 	};
 
@@ -90,22 +106,34 @@ export default function Page({
 								<Input
 									name={item.name}
 									required={item.required}
-									onChange={handleChange}
+									onChange={(e) => setQuery(e.target.value)}
 								/>
 							) : (
 								<Textarea
 									name={item.name}
 									required={item.required}
-									onChange={handleChange}
+									onChange={(e) => setQuery(e.target.value)}
 								/>
 							)}
 						</div>
 					))}
 
-					<Button type="submit" className="w-full py-6">
-						Generate content
+					<Button
+						type="submit"
+						className="w-full py-6"
+						disabled={loading}
+					>
+						{loading ? (
+							<Loader2Icon className="animate-spin mr-2" />
+						) : (
+							'Generate content'
+						)}
 					</Button>
 				</form>
+			</div>
+
+			<div className="col-span-2">
+				<ReactMarkdown>{content}</ReactMarkdown>
 			</div>
 		</div>
 	);
