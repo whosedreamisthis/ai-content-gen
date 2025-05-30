@@ -53,7 +53,7 @@ export default function SideNav() {
 					className={`${
 						path === item.path
 							? 'bg-primary text-white'
-							: 'hover:bg-primary hover:text-white'
+							: 'hover:bg-primary hover:text-white dark:hover:text-black'
 					} flex m-2 mr-2 p-2 rounded-lg cursor-pointer`}
 				>
 					<div className="flex justify-center w-full md:justify-start">
