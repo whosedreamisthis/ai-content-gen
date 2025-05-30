@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import TopNav from '@/components/nav/top-nav';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -27,14 +28,21 @@ export default function RootLayout({
 }>) {
 	return (
 		<ClerkProvider>
-			<html lang="en">
+			<html lang="en" suppressHydrationWarning>
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 				>
-					<header>
-						<TopNav />
-					</header>
-					<main>{children}</main>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						enableSystem
+						disableTransitionOnChange
+					>
+						<header>
+							<TopNav />
+						</header>
+						<main>{children}</main>
+					</ThemeProvider>
 				</body>
 			</html>
 		</ClerkProvider>

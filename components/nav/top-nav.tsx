@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { ModeToggle } from '../mode-toggle';
 import {
 	ClerkProvider,
 	SignInButton,
@@ -29,6 +30,9 @@ export default function TopNav() {
 				<SignedIn>
 					<UserButton />
 				</SignedIn>
+				<div className="ml-2">
+					<ModeToggle />
+				</div>
 			</div>
 		</nav>
 	);
