@@ -32,38 +32,54 @@ export async function saveQuery(
 }
 export async function getQueries(email: string, page: number, perPage: number) {
 	try {
+		await db();
+
 		const skip = (page - 1) * perPage;
-		const limit = perPage;
+		const totalQueries = await Query.countDocuments({ email });
 
-		const totalDocuments = await Query.countDocuments({ email });
-		const totalPages = Math.ceil(totalDocuments / perPage);
-
-		// Fetch queries and convert them to plain JavaScript objects
-		const rawQueries = await Query.find({ email })
+		const queries = await Query.find({ email })
 			.skip(skip)
-			.limit(limit)
-			.sort({ createdAt: -1 }) // Example: sort by creation date
-			.lean() // This is the key! It returns plain JavaScript objects
-			.exec();
-
-		// If you need to manipulate the data further before sending to client, do it here
-		// For example, if you want to remove sensitive fields or reformat dates
-		const queries = rawQueries.map((query) => ({
-			_id: query._id.toString(), // Convert ObjectId to string
-			// ... other fields you want to send to the client
-			prompt: query.prompt,
-			response: query.response,
-			createdAt: query.createdAt.toISOString(), // Convert Date to ISO string
-			// Add any other fields from your query schema
-		}));
+			.limit(perPage)
+			.sort({ createdAt: -1 });
 
 		return {
 			queries,
-			totalPages,
+			totalPages: Math.ceil(totalQueries / perPage),
 		};
-	} catch (error) {
-		console.error('Error fetching queries:', error);
-		// It's good practice to throw a more specific error or handle it gracefully
-		throw new Error('Failed to fetch queries.');
+	} catch (erro) {
+		return { ok: false };
 	}
+	// 	const limit = perPage;
+
+	// 	const totalDocuments = await Query.countDocuments({ email });
+	// 	const totalPages = Math.ceil(totalDocuments / perPage);
+
+	// 	// Fetch queries and convert them to plain JavaScript objects
+	// 	const rawQueries = await Query.find({ email })
+	// 		.skip(skip)
+	// 		.limit(limit)
+	// 		.sort({ createdAt: -1 }) // Example: sort by creation date
+	// 		.lean() // This is the key! It returns plain JavaScript objects
+	// 		.exec();
+
+	// 	// If you need to manipulate the data further before sending to client, do it here
+	// 	// For example, if you want to remove sensitive fields or reformat dates
+	// 	const queries = rawQueries.map((query) => ({
+	// 		_id: query._id.toString(), // Convert ObjectId to string
+	// 		// ... other fields you want to send to the client
+	// 		prompt: query.prompt,
+	// 		response: query.response,
+	// 		createdAt: query.createdAt.toISOString(), // Convert Date to ISO string
+	// 		// Add any other fields from your query schema
+	// 	}));
+
+	// 	return {
+	// 		queries,
+	// 		totalPages: Math.ceil(rawQueries / perPage),
+	// 	};
+	// } catch (error) {
+	// 	console.error('Error fetching queries:', error);
+	// 	// It's good practice to throw a more specific error or handle it gracefully
+	// 	throw new Error('Failed to fetch queries.');
+	// }
 }
